@@ -118,7 +118,13 @@ def get_label(folder, dataset_dir, class_name, class_code, df_val, class_list, a
                 dataset_image = cv2.imread(current_image_path)
                 boxes = groups.get_group(image.split('.')[0])[['XMin', 'XMax', 'YMin', 'YMax']].values.tolist()
                 file_name = str(image.split('.')[0]) + '.txt'
-                file_path = os.path.join(label_dir, file_name)
+                # file_path = os.path.join(label_dir, file_name)download_dir
+                
+                ######################## JAM CODE #####################################
+                file_path = os.path.join(download_dir, file_name) # jpg txt 함께 
+                ######################## JAM CODE #####################################
+                #file_path = os.path.join(label_dir, file_name) 
+                
                 if os.path.isfile(file_path):
                     f = open(file_path, 'a')
                 else:
@@ -131,7 +137,28 @@ def get_label(folder, dataset_dir, class_name, class_code, df_val, class_list, a
                     box[3] *= int(dataset_image.shape[0])
 
                     # each row in a file is name of the class_name, XMin, YMix, XMax, YMax (left top right bottom)
-                    print(class_name, box[0], box[2], box[1], box[3], file=f)
+                    # print(class_name, box[0], box[2], box[1], box[3], file=f) 
+                    # raw code
+
+                    ###################### Jam code ############################
+                    
+                    # rafiuddinkhan의 git 참고 (Yolo-Training-GoogleColab/data_converstion/main/main.py) - 라벨 수동지정 코드
+                    # I inspired rafiuddinkhan's git (Yolo-Training-GoogleColab/data_converstion/main/main.py) - making label code
+                    # https://github.com/rafiuddinkhan/Yolo-Training-GoogleColab/blob/64e92f46e8050764126554439439f0136b456c10/data_converstion/main/main.py#L226
+                    
+                    width = dataset_image.shape[1] # 박스 가로 (box width)
+                    height = dataset_image.shape[0] #
+
+
+                    XMin, YMin, XMax, YMax = box[0], box[2], box[1], box[3]
+                    x_center = (XMin + XMax) / float(2.0 * width) # 박스 너비 중간 ( box width's center)
+                    y_center = (YMin + YMax) / float(2.0 * height) 
+                    x_width = float(abs(XMax - XMin)) / width # 전체 너비 중 박스 너비의 비율 (0~1사이) ( ratio box width of image width )
+                    y_height = float(abs(YMax - YMin)) / height 
+
+                    # each row in a file is name of the class_name, XMin, YMin, XMax, YMax (left top right bottom)
+                    print(0, x_center, y_center, x_width, y_height, file=f)
+                    ###################### Jam code ############################
 
             except Exception as e:
                 pass
