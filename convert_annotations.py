@@ -67,8 +67,15 @@ for DIR in DIRS:
                                 coords = np.asarray([float(labels[class_len]), float(labels[1+class_len]), float(labels[2+class_len]), float(labels[3+class_len])])
                                 #coords = np.asarray([float(labels[1]), float(labels[2]), float(labels[3]), float(labels[4])])
                                 coords = convert(filename_str, coords)
-                                labels[1], labels[2], labels[3], labels[4] = coords[0], coords[1], coords[2], coords[3]
-                                newline = str(labels[0]) + " " + str(labels[1]) + " " + str(labels[2]) + " " + str(labels[3]) + " " + str(labels[4])
+                                
+                                labels[class_len], labels[1+class_len], labels[2+class_len], labels[3+class_len] = coords[0], coords[1], coords[2], coords[3]
+                                if class_len > 1: 
+                                  newline = '_'.join(list(map(str,labels[0:class_len])))+' '+' '.join(list(map(str,labels[class_len:])))
+                                else:
+                                  newline = ' '.join(list(map(str,labels)))
+                                
+#                                 labels[1], labels[2], labels[3], labels[4] = coords[0], coords[1], coords[2], coords[3]
+#                                 newline = str(labels[0]) + " " + str(labels[1]) + " " + str(labels[2]) + " " + str(labels[3]) + " " + str(labels[4])
                                 line = line.replace(line, newline)
                                 annotations.append(line)
                             f.close()
