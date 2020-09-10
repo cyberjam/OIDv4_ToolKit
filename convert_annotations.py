@@ -37,6 +37,8 @@ DIRS = os.listdir(os.getcwd())
 
 # for all train, validation and test folders
 for DIR in DIRS:
+    if CLASS_DIR == '.ipynb_checkpoints': # for exception
+        break 
     if os.path.isdir(DIR):
         os.chdir(DIR)
         print("Currently in subdirectory:", DIR)
@@ -60,7 +62,10 @@ for DIR in DIRS:
                                 for class_type in classes:
                                     line = line.replace(class_type, str(classes.get(class_type)))
                                 labels = line.split()
-                                coords = np.asarray([float(labels[1]), float(labels[2]), float(labels[3]), float(labels[4])])
+                                # ex ) if class name is multiple words(compound).
+                                class_len = len(labels)-4
+                                coords = np.asarray([float(labels[class_len]), float(labels[1+class_len]), float(labels[2+class_len]), float(labels[3+class_len])])
+                                #coords = np.asarray([float(labels[1]), float(labels[2]), float(labels[3]), float(labels[4])])
                                 coords = convert(filename_str, coords)
                                 labels[1], labels[2], labels[3], labels[4] = coords[0], coords[1], coords[2], coords[3]
                                 newline = str(labels[0]) + " " + str(labels[1]) + " " + str(labels[2]) + " " + str(labels[3]) + " " + str(labels[4])
